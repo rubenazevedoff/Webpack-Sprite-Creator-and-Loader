@@ -1,4 +1,5 @@
 var fs = require('fs');
+var pathFS = require('path');
 
 // Webpack Loader
 
@@ -6,11 +7,11 @@ function readDir(path) {
     return fs.readdirSync(path)
 }
 
-function readFiles(files) {
-    var content = null;
-
+function readFiles(files, path) {
+    var content = '';
+    
     files.map(function(file) {
-        content += 'var ' + file + ' = ' + fs.readFileSync(file) + ';';
+        content += "var " + pathFS.basename(file).slice(0, -4) + " = '" + fs.readFileSync(path + file) + "';";
     });
 
     return content;
@@ -48,8 +49,9 @@ function appendSpriteOnDOM(sprite) {
 
 // Init (for now, we will not chain any function)
 
-var files = readDir('./src');
-var contentOfFiles = readFiles(files);
+var pathToFiles = './src/';
+var files = readDir(pathToFiles);
+var contentOfFiles = readFiles(files, pathToFiles);
 var outputedFile = makeSpriteFile(contentOfFiles);
 
-appendSpriteOnDOM(outputedFile);
+//appendSpriteOnDOM(outputedFile);
